@@ -1,0 +1,13 @@
+{
+  "name": "SHESHA — Your town. Delivered.",
+  "short_name": "SHESHA",
+  "description": "Local delivery for food, groceries, butchery, health, hardware and parcels.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#101010",
+  "theme_color": "#101010",
+  "categories": ["shopping", "food", "lifestyle"],
+  "lang": "en-ZA"
+}
