@@ -1,0 +1,3 @@
+-- Admin approval operations deployed to production SHESHA Supabase.
+-- Provides authenticated, admin-validated RPCs for merchant status and driver approval.
+-- Changes are written to audit_logs.
