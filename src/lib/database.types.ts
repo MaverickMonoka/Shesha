@@ -118,6 +118,7 @@ export type Database = {
           id: string
           product_id: string
           quantity: number
+          selected_options: Json
         }
         Insert: {
           cart_id: string
@@ -125,6 +126,7 @@ export type Database = {
           id?: string
           product_id: string
           quantity: number
+          selected_options?: Json
         }
         Update: {
           cart_id?: string
@@ -132,6 +134,7 @@ export type Database = {
           id?: string
           product_id?: string
           quantity?: number
+          selected_options?: Json
         }
         Relationships: [
           {
@@ -806,6 +809,7 @@ export type Database = {
           delivery_fee: number
           discount: number
           driver_id: string | null
+          fulfillment_type: string
           id: string
           merchant_id: string
           notes: string | null
@@ -826,6 +830,7 @@ export type Database = {
           delivery_fee?: number
           discount?: number
           driver_id?: string | null
+          fulfillment_type?: string
           id?: string
           merchant_id: string
           notes?: string | null
@@ -846,6 +851,7 @@ export type Database = {
           delivery_fee?: number
           discount?: number
           driver_id?: string | null
+          fulfillment_type?: string
           id?: string
           merchant_id?: string
           notes?: string | null
@@ -1349,6 +1355,15 @@ export type Database = {
       can_manage_merchant: { Args: { mid: string }; Returns: boolean }
       checkout_cart: {
         Args: { p_address_id: string; p_branch_id: string; p_notes?: string }
+        Returns: string
+      }
+      checkout_cart_v2: {
+        Args: {
+          p_address_id?: string
+          p_branch_id: string
+          p_fulfillment: string
+          p_notes?: string
+        }
         Returns: string
       }
       has_role: {
