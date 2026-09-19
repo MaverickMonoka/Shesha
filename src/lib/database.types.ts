@@ -1358,6 +1358,17 @@ export type Database = {
         }
         Returns: Database["public"]["Enums"]["order_status"]
       }
+      apply_payment_event: {
+        Args: {
+          p_event_id: string
+          p_event_type: string
+          p_payload?: Json
+          p_payment_id: string
+          p_provider_reference: string
+          p_status: Database["public"]["Enums"]["payment_status"]
+        }
+        Returns: Json
+      }
       can_manage_merchant: { Args: { mid: string }; Returns: boolean }
       checkout_cart: {
         Args: { p_address_id: string; p_branch_id: string; p_notes?: string }
@@ -1388,7 +1399,15 @@ export type Database = {
         Args: { p_order_id: string }
         Returns: undefined
       }
+      prepare_payment_session: {
+        Args: { p_order_id: string; p_provider: string }
+        Returns: Json
+      }
       prepare_yoco_payment: { Args: { p_order_id: string }; Returns: Json }
+      quote_delivery_fee: {
+        Args: { p_address_id: string; p_branch_id: string }
+        Returns: Json
+      }
       respond_dispatch_offer: {
         Args: { p_accept: boolean; p_offer_id: string }
         Returns: string
