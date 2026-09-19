@@ -1,0 +1,3 @@
+-- Driver dispatch operations deployed to production SHESHA Supabase.
+-- RPCs are SECURITY DEFINER with explicit authenticated grants and validate auth.uid().
+-- Functions: set_driver_availability(boolean), respond_dispatch_offer(uuid,boolean), advance_delivery(uuid,order_status).
