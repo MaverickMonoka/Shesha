@@ -572,13 +572,25 @@ export type Database = {
           description: string | null
           email: string | null
           id: string
+          landmark: string | null
           logo_url: string | null
+          merchant_mode: string | null
           name: string
+          onboarding_completed_at: string | null
+          ordering_features: Json
           owner_id: string
+          owner_name: string | null
+          payout_details: Json
           phone: string | null
+          registration_number: string | null
           slug: string
           status: Database["public"]["Enums"]["merchant_status"]
+          supports_delivery: boolean
+          supports_pickup: boolean
+          terms_accepted_at: string | null
+          township_section: string | null
           updated_at: string
+          whatsapp_number: string | null
         }
         Insert: {
           banner_url?: string | null
@@ -588,13 +600,25 @@ export type Database = {
           description?: string | null
           email?: string | null
           id?: string
+          landmark?: string | null
           logo_url?: string | null
+          merchant_mode?: string | null
           name: string
+          onboarding_completed_at?: string | null
+          ordering_features?: Json
           owner_id: string
+          owner_name?: string | null
+          payout_details?: Json
           phone?: string | null
+          registration_number?: string | null
           slug: string
           status?: Database["public"]["Enums"]["merchant_status"]
+          supports_delivery?: boolean
+          supports_pickup?: boolean
+          terms_accepted_at?: string | null
+          township_section?: string | null
           updated_at?: string
+          whatsapp_number?: string | null
         }
         Update: {
           banner_url?: string | null
@@ -604,13 +628,25 @@ export type Database = {
           description?: string | null
           email?: string | null
           id?: string
+          landmark?: string | null
           logo_url?: string | null
+          merchant_mode?: string | null
           name?: string
+          onboarding_completed_at?: string | null
+          ordering_features?: Json
           owner_id?: string
+          owner_name?: string | null
+          payout_details?: Json
           phone?: string | null
+          registration_number?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["merchant_status"]
+          supports_delivery?: boolean
+          supports_pickup?: boolean
+          terms_accepted_at?: string | null
+          township_section?: string | null
           updated_at?: string
+          whatsapp_number?: string | null
         }
         Relationships: [
           {
@@ -1027,45 +1063,63 @@ export type Database = {
           category_id: string | null
           created_at: string
           description: string | null
+          extras: Json
           id: string
           image_url: string | null
           is_active: boolean
+          is_special: boolean
           merchant_id: string
           name: string
+          pack_sizes: Json
+          preparation_options: Json
           price: number
           sku: string | null
+          special_label: string | null
           stock_quantity: number | null
           track_stock: boolean
+          unit_label: string | null
           updated_at: string
         }
         Insert: {
           category_id?: string | null
           created_at?: string
           description?: string | null
+          extras?: Json
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_special?: boolean
           merchant_id: string
           name: string
+          pack_sizes?: Json
+          preparation_options?: Json
           price: number
           sku?: string | null
+          special_label?: string | null
           stock_quantity?: number | null
           track_stock?: boolean
+          unit_label?: string | null
           updated_at?: string
         }
         Update: {
           category_id?: string | null
           created_at?: string
           description?: string | null
+          extras?: Json
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_special?: boolean
           merchant_id?: string
           name?: string
+          pack_sizes?: Json
+          preparation_options?: Json
           price?: number
           sku?: string | null
+          special_label?: string | null
           stock_quantity?: number | null
           track_stock?: boolean
+          unit_label?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1299,6 +1353,13 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      merchant_advance_order: {
+        Args: {
+          p_order_id: string
+          p_status: Database["public"]["Enums"]["order_status"]
+        }
+        Returns: undefined
+      }
       prepare_yoco_payment: { Args: { p_order_id: string }; Returns: Json }
       respond_dispatch_offer: {
         Args: { p_accept: boolean; p_offer_id: string }
