@@ -1,0 +1,3 @@
+-- Applied to production SHESHA Supabase on 2026-09-19.
+-- Adds carts, cart_items, payment_events, delivery_events, merchant_hours, promotions and server-authoritative checkout_cart RPC.
+-- Production migration is recorded in Supabase as transactional_checkout_operations.
