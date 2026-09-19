@@ -1384,6 +1384,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      merchant_complete_pickup: {
+        Args: { p_order_id: string }
+        Returns: undefined
+      }
       prepare_yoco_payment: { Args: { p_order_id: string }; Returns: Json }
       respond_dispatch_offer: {
         Args: { p_accept: boolean; p_offer_id: string }
