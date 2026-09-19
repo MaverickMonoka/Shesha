@@ -572,13 +572,14 @@ export type Database = {
           description: string | null
           email: string | null
           id: string
+          is_demo: boolean
           landmark: string | null
           logo_url: string | null
           merchant_mode: string | null
           name: string
           onboarding_completed_at: string | null
           ordering_features: Json
-          owner_id: string
+          owner_id: string | null
           owner_name: string | null
           payout_details: Json
           phone: string | null
@@ -600,13 +601,14 @@ export type Database = {
           description?: string | null
           email?: string | null
           id?: string
+          is_demo?: boolean
           landmark?: string | null
           logo_url?: string | null
           merchant_mode?: string | null
           name: string
           onboarding_completed_at?: string | null
           ordering_features?: Json
-          owner_id: string
+          owner_id?: string | null
           owner_name?: string | null
           payout_details?: Json
           phone?: string | null
@@ -628,13 +630,14 @@ export type Database = {
           description?: string | null
           email?: string | null
           id?: string
+          is_demo?: boolean
           landmark?: string | null
           logo_url?: string | null
           merchant_mode?: string | null
           name?: string
           onboarding_completed_at?: string | null
           ordering_features?: Json
-          owner_id?: string
+          owner_id?: string | null
           owner_name?: string | null
           payout_details?: Json
           phone?: string | null
