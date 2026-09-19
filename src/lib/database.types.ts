@@ -116,25 +116,31 @@ export type Database = {
           cart_id: string
           created_at: string
           id: string
+          option_price_delta: number
           product_id: string
           quantity: number
           selected_options: Json
+          variant_key: string
         }
         Insert: {
           cart_id: string
           created_at?: string
           id?: string
+          option_price_delta?: number
           product_id: string
           quantity: number
           selected_options?: Json
+          variant_key?: string
         }
         Update: {
           cart_id?: string
           created_at?: string
           id?: string
+          option_price_delta?: number
           product_id?: string
           quantity?: number
           selected_options?: Json
+          variant_key?: string
         }
         Relationships: [
           {
