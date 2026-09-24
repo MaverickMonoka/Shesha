@@ -1388,6 +1388,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      mark_all_notifications_read: { Args: never; Returns: undefined }
       merchant_advance_order: {
         Args: {
           p_order_id: string
