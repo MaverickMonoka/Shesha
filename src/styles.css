@@ -108,3 +108,7 @@ header{border-bottom:1px solid #ffffff10;backdrop-filter:blur(14px)}.hero{positi
 @media(max-width:520px){.merchantmetrics,.drivermetrics{grid-template-columns:1fr 1fr}.drivermetrics strong{font-size:21px}.routepreview{padding:10px}}
 
 .deliveryquote.loading{opacity:.78}.choice.disabled{opacity:.5;cursor:not-allowed}.choice.disabled input{cursor:not-allowed}
+
+.cartnav{display:inline-flex!important;align-items:center;gap:7px}
+.cartbadge{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#ff4a20;color:#fff;font-size:10px;font-weight:900;line-height:1}
+.mobilecarticon{position:relative;display:inline-flex}.mobilecarticon .cartbadge{position:absolute;right:-11px;top:-8px;min-width:17px;height:17px;font-size:9px}
