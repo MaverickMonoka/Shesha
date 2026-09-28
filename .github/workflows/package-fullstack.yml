@@ -1,0 +1,29 @@
+name: Package SHESHA Full Stack
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "supabase/functions/**"
+      - "docs/FULL_STACK_MOBICOM_PAY.md"
+      - ".env.example"
+      - ".github/workflows/package-fullstack.yml"
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build full-stack archive
+        run: |
+          mkdir -p release
+          zip -r release/SHESHA_Full_Stack_Mobicom_Pay.zip .             -x ".git/*"             -x "release/*"             -x "node_modules/*"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SHESHA-Full-Stack-Mobicom-Pay
+          path: release/SHESHA_Full_Stack_Mobicom_Pay.zip
+          if-no-files-found: error
+          retention-days: 30
