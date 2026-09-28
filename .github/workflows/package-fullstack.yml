@@ -5,9 +5,13 @@ on:
   push:
     branches: [main]
     paths:
-      - "supabase/functions/**"
-      - "docs/FULL_STACK_MOBICOM_PAY.md"
+      - "src/**"
+      - "public/**"
+      - "supabase/**"
+      - "docs/**"
       - ".env.example"
+      - "package.json"
+      - "netlify.toml"
       - ".github/workflows/package-fullstack.yml"
 
 jobs:
