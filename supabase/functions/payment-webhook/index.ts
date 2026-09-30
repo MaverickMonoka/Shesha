@@ -1,5 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
 
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{"Content-Type":"application/json"}});
 const hex=(bytes:ArrayBuffer)=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,"0")).join("");
@@ -17,6 +17,7 @@ Deno.serve(async(req)=>{
     if(!secret) return json({error:"Webhook secret is not configured"},503);
 
     const raw=await req.text();
+    if(raw.length>65536)return json({error:"Webhook payload too large"},413);
     const suppliedRaw=req.headers.get("x-mobicom-signature")||req.headers.get("x-gateway-signature")||req.headers.get("x-shesha-signature")||"";
     const supplied=suppliedRaw.replace(/^sha256=/i,"").trim().toLowerCase();
     if(!supplied) return json({error:"Missing webhook signature"},401);
@@ -42,8 +43,9 @@ Deno.serve(async(req)=>{
     const {data:payment,error:paymentError}=await admin.from("payments").select("id,amount,currency,status").eq("id",paymentId).maybeSingle();
     if(paymentError||!payment) return json({error:"Payment not found"},404);
 
-    if(data?.currency && String(data.currency).toUpperCase()!==String(payment.currency).toUpperCase()) return json({error:"Currency mismatch"},400);
-    if(data?.amount_minor!==undefined){
+    if(!data?.currency||String(data.currency).toUpperCase()!==String(payment.currency).toUpperCase()) return json({error:"Currency mismatch"},400);
+    if(typeof data?.amount_minor!=="number"||!Number.isSafeInteger(data.amount_minor)||data.amount_minor<0)return json({error:"Valid amount_minor is required"},400);
+    {
       const expectedMinor=Math.round(Number(payment.amount)*100);
       if(Number(data.amount_minor)!==expectedMinor) return json({error:"Amount mismatch"},400);
     }
@@ -55,7 +57,8 @@ Deno.serve(async(req)=>{
     else if(["refunded"].includes(statusRaw)) mapped="refunded";
     else if(["partially_refunded","partial_refund"].includes(statusRaw)) mapped="partially_refunded";
     else if(["processing","authorizing","authorised","authorized"].includes(statusRaw)) mapped="processing";
-    else mapped="pending";
+    else if(["pending","created"].includes(statusRaw)) mapped="pending";
+    else return json({error:"Unknown payment status"},400);
 
     const {data:result,error}=await admin.rpc("apply_payment_event",{
       p_payment_id:paymentId,
@@ -65,7 +68,7 @@ Deno.serve(async(req)=>{
       p_event_type:eventType,
       p_payload:body
     });
-    if(error) throw error;
+    if(error) return json({error:"Could not record payment event. Please retry."},503);
 
     return json({received:true,...result});
   }catch(e){

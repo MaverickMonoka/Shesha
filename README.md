@@ -13,7 +13,7 @@ SHESHA is a Mobicom X hyperlocal multi-vendor delivery platform for South Africa
 - Netlify-ready web/PWA frontend (next build phase)
 
 ## Database
-The first production migration is in `supabase/migrations/001_shesha_core.sql`.
+For a fresh Supabase project, run `supabase/bootstrap/install.sql` once. It installs the current schema and security fixes atomically. Do not run it against an existing project. Historical migrations remain for audit/history; do not apply them on top of the bootstrap.
 
 It establishes the core data model, immutable order pricing snapshots, audit/status history, RLS helper functions and access policies. Never expose a Supabase service-role key in the browser.
 

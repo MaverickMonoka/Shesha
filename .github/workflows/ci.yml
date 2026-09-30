@@ -27,4 +27,8 @@ jobs:
       - name: Build
         run: npm run build
       - name: Payment session tests
-        run: node --test tests/*.test.mjs
+        run: node tests/payment-session.test.mjs
+      - name: Payment webhook tests
+        run: node tests/payment-webhook.test.mjs
+      - name: Database integration tests
+        run: node tests/database.integration.mjs

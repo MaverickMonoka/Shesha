@@ -817,6 +817,8 @@ export type Database = {
           driver_id: string | null
           fulfillment_type: string
           id: string
+          inventory_hold_until: string | null
+          inventory_issue: Json
           merchant_id: string
           notes: string | null
           order_number: number
@@ -838,6 +840,8 @@ export type Database = {
           driver_id?: string | null
           fulfillment_type?: string
           id?: string
+          inventory_hold_until?: string | null
+          inventory_issue?: Json
           merchant_id: string
           notes?: string | null
           order_number?: never
@@ -859,6 +863,8 @@ export type Database = {
           driver_id?: string | null
           fulfillment_type?: string
           id?: string
+          inventory_hold_until?: string | null
+          inventory_issue?: Json
           merchant_id?: string
           notes?: string | null
           order_number?: never
@@ -1340,6 +1346,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_cart_product: {
+        Args: { p_options?: Json; p_product_id: string }
+        Returns: string
+      }
+      admin_resolve_inventory_issue: {
+        Args: { p_order_id: string }
+        Returns: undefined
+      }
       admin_set_driver_approval: {
         Args: { p_approved: boolean; p_driver_id: string }
         Returns: undefined
@@ -1372,6 +1386,16 @@ export type Database = {
       can_manage_merchant: { Args: { mid: string }; Returns: boolean }
       checkout_cart: {
         Args: { p_address_id: string; p_branch_id: string; p_notes?: string }
+        Returns: string
+      }
+      checkout_cart_confirmed: {
+        Args: {
+          p_address_id?: string
+          p_branch_id: string
+          p_expected_total: number
+          p_fulfillment: string
+          p_notes?: string
+        }
         Returns: string
       }
       checkout_cart_v2: {
@@ -1409,13 +1433,35 @@ export type Database = {
         Args: { p_address_id: string; p_branch_id: string }
         Returns: Json
       }
+      refresh_cart_prices: { Args: never; Returns: undefined }
       respond_dispatch_offer: {
         Args: { p_accept: boolean; p_offer_id: string }
         Returns: string
       }
+      set_cart_item_quantity: {
+        Args: { p_item_id: string; p_quantity: number }
+        Returns: undefined
+      }
       set_driver_availability: {
         Args: { p_available: boolean }
         Returns: Database["public"]["Enums"]["driver_state"]
+      }
+      submit_driver_application: {
+        Args: { p_registration?: string; p_vehicle: string }
+        Returns: undefined
+      }
+      submit_merchant_application: {
+        Args: { p_details: Json }
+        Returns: string
+      }
+      validated_option_delta: {
+        Args: {
+          p_extras: Json
+          p_options: Json
+          p_packs: Json
+          p_preparation: Json
+        }
+        Returns: number
       }
     }
     Enums: {
