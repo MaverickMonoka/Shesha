@@ -21,8 +21,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Payment session tests
+        run: node --test tests/*.test.mjs

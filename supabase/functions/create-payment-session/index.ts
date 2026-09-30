@@ -9,6 +9,7 @@ const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,
 
 Deno.serve(async(req)=>{
   if(req.method==="OPTIONS") return new Response("ok",{headers:cors});
+  if(req.method!=="POST") return json({error:"Method not allowed"},405);
   try{
     const auth=req.headers.get("Authorization")||"";
     if(!auth.startsWith("Bearer ")) return json({error:"Authentication required"},401);
@@ -24,6 +25,7 @@ Deno.serve(async(req)=>{
     const successUrl=body?.success_url;
     const cancelUrl=body?.cancel_url;
     if(!orderId||!successUrl||!cancelUrl) return json({error:"order_id, success_url and cancel_url are required"},400);
+    if(new URL(successUrl).protocol!=="https:"||new URL(cancelUrl).protocol!=="https:") return json({error:"Payment return URLs must use HTTPS"},400);
 
     const gatewayBase=(Deno.env.get("PAYMENT_GATEWAY_BASE_URL")||"").replace(/\/$/,"");
     const gatewayKey=Deno.env.get("PAYMENT_GATEWAY_API_KEY")||"";
@@ -39,6 +41,7 @@ Deno.serve(async(req)=>{
       const webhookUrl=url+"/functions/v1/payment-webhook";
       const response=await fetch(gatewayBase+"/v1/checkout/sessions",{
         method:"POST",
+        signal:AbortSignal.timeout(15000),
         headers:{
           "Authorization":"Bearer "+gatewayKey,
           "Content-Type":"application/json",
@@ -65,19 +68,21 @@ Deno.serve(async(req)=>{
 
       const redirectUrl=result.checkout_url||result.redirect_url||result.redirectUrl;
       const providerReference=result.id||result.session_id||result.reference||null;
-      if(!redirectUrl) return json({error:"Payment gateway response did not include a checkout URL"},502);
+      if(!redirectUrl||new URL(redirectUrl).protocol!=="https:") return json({error:"Payment gateway did not return a secure checkout URL"},502);
 
-      await admin.from("payments").update({
+      const {error:updateError}=await admin.from("payments").update({
         status:"processing",
         provider_reference:providerReference,
         metadata:{gateway_session:result,provider:"mobicom_pay"}
-      }).eq("id",data.payment_id);
+      }).eq("id",data.payment_id).in("status",["pending","processing"]);
+      if(updateError) throw new Error("Could not save the payment session. Please try again.");
 
       return json({redirectUrl,id:providerReference,provider:"mobicom_pay"});
     }
 
     const response=await fetch("https://payments.yoco.com/api/checkouts",{
       method:"POST",
+        signal:AbortSignal.timeout(15000),
       headers:{"Authorization":"Bearer "+yocoSecret,"Content-Type":"application/json"},
       body:JSON.stringify({
         amount:Math.round(Number(data.amount)*100),
@@ -90,16 +95,18 @@ Deno.serve(async(req)=>{
     const result=await response.json().catch(()=>({}));
     if(!response.ok) return json({error:result?.message||"Fallback checkout could not be created"},502);
     const redirectUrl=result.redirectUrl||result.redirect_url;
-    if(!redirectUrl) return json({error:"Fallback gateway response did not include a checkout URL"},502);
+    if(!redirectUrl||new URL(redirectUrl).protocol!=="https:") return json({error:"Fallback gateway did not return a secure checkout URL"},502);
 
-    await admin.from("payments").update({
+    const {error:updateError}=await admin.from("payments").update({
       status:"processing",
       provider_reference:result.id||null,
       metadata:{gateway_session:result,provider:"yoco"}
-    }).eq("id",data.payment_id);
+    }).eq("id",data.payment_id).in("status",["pending","processing"]);
+      if(updateError) throw new Error("Could not save the payment session. Please try again.");
 
     return json({redirectUrl,id:result.id,provider:"yoco"});
   }catch(e){
+    if(e instanceof Error && ["TimeoutError","AbortError"].includes(e.name)) return json({error:"Payment gateway timed out. Please retry from your orders."},504);
     return json({error:e instanceof Error?e.message:"Payment error"},400);
   }
 });

@@ -21,10 +21,16 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
       - name: Build full-stack archive
         run: |
           mkdir -p release
-          zip -r release/SHESHA_Full_Stack_Mobicom_Pay.zip .             -x ".git/*"             -x "release/*"             -x "node_modules/*"
+          zip -r release/SHESHA_Full_Stack_Mobicom_Pay.zip . -x ".git/*" "release/*" "node_modules/*" ".env" ".env.local" ".env.production" "*.tsbuildinfo"
       - uses: actions/upload-artifact@v4
         with:
           name: SHESHA-Full-Stack-Mobicom-Pay
